@@ -1,0 +1,672 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>牙牙饮食计划 · 根管期减脂健身</title>
+<style>
+  :root{
+    --bg1:#fdf2f7; --bg2:#eef7ff; --ink:#3b2e3f; --muted:#7a6c7d;
+    --card:#ffffff; --line:#f0dfe7; --accent:#f2789f; --accent2:#8fb8e8;
+    --good:#45b47d; --warn:#f2a35c; --soft:#fff3f6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"Microsoft YaHei","PingFang SC","Hiragino Sans GB",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    background:linear-gradient(135deg,var(--bg1),var(--bg2));
+    min-height:100vh;color:var(--ink);padding-bottom:40px;
+  }
+  .app{max-width:1080px;margin:0 auto;padding:18px}
+  header{display:flex;align-items:center;gap:14px;margin:8px 0 18px}
+  .logo{width:56px;height:56px;border-radius:18px;background:#fff;display:grid;place-items:center;font-size:30px;box-shadow:0 8px 20px rgba(242,120,159,.18)}
+  header h1{font-size:26px;letter-spacing:.5px}
+  header p{color:var(--muted);font-size:14px;margin-top:4px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:0 12px 30px rgba(80,50,80,.07)}
+  h2{font-size:17px;margin-bottom:12px}
+  .profile .grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+  .profile label{display:flex;flex-direction:column;font-size:12px;color:var(--muted);gap:6px}
+  .profile input,.profile select{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px 11px;font-size:14px;background:#fff;color:var(--ink);outline:none}
+  .profile input:focus,.profile select:focus{border-color:var(--accent)}
+  .profile-actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  button{font:inherit;cursor:pointer;border:none;border-radius:12px;padding:10px 16px;background:#fff;color:var(--ink);transition:.2s}
+  button.primary{background:linear-gradient(135deg,#f2789f,#f2a1b8);color:#fff;font-weight:600;box-shadow:0 8px 18px rgba(242,120,159,.25)}
+  button.primary:hover{transform:translateY(-1px)}
+  button.ghost{background:#f8f0f4;color:#8a4b63}
+  .profile-result{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}
+  .profile-result div{background:var(--soft);border-radius:14px;padding:10px;text-align:center}
+  .profile-result span{display:block;font-size:11px;color:var(--muted)}
+  .profile-result strong{font-size:18px}
+  .tabs{display:flex;gap:8px;margin:18px 0 14px;flex-wrap:wrap}
+  .tab{padding:10px 18px;background:#fff;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-weight:600}
+  .tab.active{background:linear-gradient(135deg,#f2789f,#f2a1b8);color:#fff;border-color:transparent}
+  .view{display:none}
+  .view.active{display:block}
+  .stage-banner{background:linear-gradient(135deg,#fff3e0,#ffe8f0);border:1px solid #f8d5c0;border-radius:18px;padding:14px 16px;font-size:14px;margin-bottom:14px;line-height:1.7}
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+  .metric{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;text-align:center}
+  .metric span{display:block;font-size:12px;color:var(--muted)}
+  .metric strong{font-size:24px;display:block;margin:4px 0}
+  .metric small{color:var(--muted)}
+  .macro-box{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px 16px;margin-bottom:14px}
+  .macro-row{display:grid;grid-template-columns:54px 1fr 90px;align-items:center;gap:10px;margin:9px 0}
+  .macro-row span{font-size:13px;color:var(--muted)}
+  .bar{height:10px;background:#f3e8ee;border-radius:999px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;border-radius:999px;transition:width .4s}
+  .bar.p i{background:linear-gradient(90deg,#f2789f,#ffb3c6)}
+  .bar.c i{background:linear-gradient(90deg,#8fb8e8,#b7d3f2)}
+  .bar.f i{background:linear-gradient(90deg,#f2c37c,#f7dba9)}
+  .macro-row b{font-size:13px;text-align:right}
+  .day-actions{display:flex;gap:10px;margin:6px 0 16px;flex-wrap:wrap}
+  .plan-list{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .meal-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:16px;box-shadow:0 10px 24px rgba(80,50,80,.05)}
+  .meal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  .meal-head h3{font-size:16px}
+  .meal-head button{background:#f8f0f4;color:#8a4b63;padding:7px 12px;font-size:12px}
+  .food-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-top:1px dashed #f0dfe7}
+  .food-row:first-of-type{border-top:none}
+  .food-name{font-weight:600;font-size:14px}
+  .food-meta{color:var(--muted);font-size:12px;margin-top:3px}
+  .food-right{display:flex;align-items:center;gap:8px}
+  .food-kcal{font-weight:700;font-size:15px;white-space:nowrap}
+  .food-kcal small{font-weight:400;color:var(--muted);font-size:11px}
+  .mini{width:30px;height:30px;border-radius:10px;background:#fff0f5;color:#d95c84;font-size:18px;line-height:1;padding:0}
+  .meal-total{text-align:right;font-size:12px;color:var(--muted);margin-top:4px}
+  .consumed{margin-top:16px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{background:var(--soft);border:1px solid #f5d7e2;border-radius:999px;padding:8px 12px;font-size:13px;display:flex;align-items:center;gap:8px}
+  .chip b{font-size:12px;color:#d95c84}
+  .chip button{background:none;padding:0;width:18px;height:18px;border-radius:50%;color:#b0768a;font-size:14px;line-height:1}
+  .empty{color:var(--muted);font-size:13px;padding:10px}
+  .week-list{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .day-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:16px}
+  .day-card h3{font-size:15px;margin-bottom:8px;color:#8a4b63}
+  .day-card .row{font-size:13px;display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-top:1px dashed #f0dfe7}
+  .day-card .row span:last-child{white-space:nowrap;font-weight:600}
+  .day-total{text-align:right;font-size:12px;color:var(--muted);margin-top:6px}
+  .food-tools input{width:100%;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:14px;outline:none}
+  .food-list{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+  .food-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px}
+  .food-card .top{display:flex;justify-content:space-between;align-items:flex-start}
+  .food-card h4{font-size:14px}
+  .food-card .kcal{font-weight:700;color:#d95c84;white-space:nowrap}
+  .food-card p{font-size:12px;color:var(--muted);margin:6px 0}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .tag{font-size:11px;background:#f5f0f4;color:#7a6c7d;border-radius:999px;padding:4px 8px}
+  .tag.ok{background:#e7f6ee;color:#2f8d62}
+  .guide-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .guide-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px}
+  .guide-card h3{font-size:15px;margin-bottom:10px}
+  .guide-card li{font-size:14px;line-height:1.9;margin-left:18px}
+  .badge{display:inline-block;background:#fde8ef;color:#c84b75;border-radius:999px;padding:3px 9px;font-size:11px;font-weight:600;margin-left:6px}
+  footer{text-align:center;color:var(--muted);font-size:12px;margin-top:24px}
+  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:#3b2e3f;color:#fff;padding:11px 18px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:99}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  @media (max-width:820px){
+    .profile .grid{grid-template-columns:repeat(2,1fr)}
+    .profile-result{grid-template-columns:repeat(2,1fr)}
+    .cards{grid-template-columns:repeat(2,1fr)}
+    .plan-list,.week-list{grid-template-columns:1fr}
+    .food-list{grid-template-columns:repeat(2,1fr)}
+    .guide-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">🦷</div>
+    <div>
+      <h1>牙牙饮食计划</h1>
+      <p>根管期 · 温和减脂 · 健身好味日常</p>
+    </div>
+  </header>
+
+  <section class="profile card">
+    <h2>我的小档案</h2>
+    <div class="grid">
+      <label>身高(cm)<input id="height" type="number" min="140" max="210" value="160"></label>
+      <label>体重(kg)<input id="weight" type="number" min="35" max="160" value="55"></label>
+      <label>年龄<input id="age" type="number" min="16" max="60" value="21"></label>
+      <label>活动水平
+        <select id="activity">
+          <option value="1.2">久坐少动</option>
+          <option value="1.375">每周1-3练</option>
+          <option value="1.55" selected>每周3-5练</option>
+          <option value="1.725">每周6-7练</option>
+          <option value="1.9">高强度训练</option>
+        </select>
+      </label>
+      <label>目标
+        <select id="goal">
+          <option value="mild">温和减脂(-250)</option>
+          <option value="cut" selected>标准减脂(-400)</option>
+          <option value="maintain">保持体重</option>
+          <option value="lean">塑形增肌(+150)</option>
+        </select>
+      </label>
+      <label>根管阶段
+        <select id="stage">
+          <option value="1">术后0-24小时</option>
+          <option value="2" selected>术后2-7天</option>
+          <option value="3">术后7天以上</option>
+        </select>
+      </label>
+    </div>
+    <div class="profile-actions">
+      <button id="saveBtn" class="primary">保存并生成今日推荐</button>
+    </div>
+    <div class="profile-result">
+      <div><span>基础代谢</span><strong id="bmrText">--</strong></div>
+      <div><span>推荐日摄入</span><strong id="targetText">--</strong></div>
+      <div><span>蛋白质</span><strong id="proteinTarget">--</strong></div>
+      <div><span>碳水</span><strong id="carbsTarget">--</strong></div>
+      <div><span>脂肪</span><strong id="fatTarget">--</strong></div>
+    </div>
+  </section>
+
+  <nav class="tabs">
+    <button class="tab active" data-view="today">今日推荐</button>
+    <button class="tab" data-view="week">七日计划</button>
+    <button class="tab" data-view="foods">食物库</button>
+    <button class="tab" data-view="guide">术后须知</button>
+  </nav>
+
+  <section id="view-today" class="view active">
+    <div class="stage-banner" id="stageBanner"></div>
+    <div class="cards">
+      <div class="metric"><span>目标摄入</span><strong id="targetKcal">--</strong><small>kcal / 天</small></div>
+      <div class="metric"><span>今日推荐</span><strong id="planKcal">--</strong><small>kcal</small></div>
+      <div class="metric"><span>已记录</span><strong id="consumedKcal">--</strong><small>kcal</small></div>
+      <div class="metric"><span>还可吃</span><strong id="remainingKcal">--</strong><small>kcal</small></div>
+    </div>
+    <div class="macro-box">
+      <div class="macro-row"><span>蛋白质</span><div class="bar p"><i id="proteinBar"></i></div><b id="proteinVal">--</b></div>
+      <div class="macro-row"><span>碳水</span><div class="bar c"><i id="carbsBar"></i></div><b id="carbsVal">--</b></div>
+      <div class="macro-row"><span>脂肪</span><div class="bar f"><i id="fatBar"></i></div><b id="fatVal">--</b></div>
+    </div>
+    <div class="day-actions">
+      <button id="genBtn" class="primary">✨ 一键生成全天食谱</button>
+      <button id="copyBtn">复制今日清单</button>
+      <button id="clearLogBtn" class="ghost">清空已记录</button>
+    </div>
+    <div id="planList" class="plan-list"></div>
+    <div class="consumed card">
+      <h2>今日已记录</h2>
+      <div id="consumedList" class="chips"></div>
+    </div>
+  </section>
+
+  <section id="view-week" class="view">
+    <div class="day-actions"><button id="weekBtn" class="primary">重新生成一周</button></div>
+    <div id="weekList" class="week-list"></div>
+  </section>
+
+  <section id="view-foods" class="view">
+    <div class="food-tools"><input id="foodSearch" placeholder="搜索食物，例如：粥 / 鸡胸 / 南瓜 / 酸奶"></div>
+    <div id="foodList" class="food-list"></div>
+  </section>
+
+  <section id="view-guide" class="view">
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h3>🦷 根管期怎么吃</h3>
+        <ul>
+          <li>麻药未退时（通常2-4小时）先别吃东西，避免咬到舌头或脸颊。</li>
+          <li>临时充填期间，用<b>非治疗侧</b>咀嚼。</li>
+          <li>食物选<b>软、烂、温、不粘</b>，少量多餐。</li>
+          <li>暂时避开：坚果、硬糖、口香糖、炸物、过烫、过辣、酒精。</li>
+          <li>喝水或流食用<b>常温/微温</b>，不要烫。</li>
+        </ul>
+      </div>
+      <div class="guide-card">
+        <h3>🥗 减脂健身小原则</h3>
+        <ul>
+          <li>热量缺口控制在每天 250-400 kcal，不节食。</li>
+          <li>每餐有蛋白质：蛋、鱼、鸡胸、豆腐、奶类。</li>
+          <li>碳水选软烂粗粮：南瓜、紫薯、燕麦、小米粥。</li>
+          <li>每天喝水 1500-2000 ml，小口多次。</li>
+          <li>根管期先温和活动，恢复后再逐渐加训练强度。</li>
+        </ul>
+      </div>
+      <div class="guide-card">
+        <h3>✅ 推荐吃</h3>
+        <ul>
+          <li>小米南瓜粥、鸡丝粥、鱼蓉汤、鸡蛋羹</li>
+          <li>土豆泥、南瓜泥、紫薯泥、山药泥</li>
+          <li>嫩豆腐、无糖酸奶、豆浆、香蕉泥、苹果泥</li>
+          <li>清蒸鱼、鸡胸肉泥、虾仁蒸蛋</li>
+        </ul>
+      </div>
+      <div class="guide-card">
+        <h3>⛔ 暂时别吃</h3>
+        <ul>
+          <li>坚果、爆米花、硬糖、脆片、骨头</li>
+          <li>口香糖、年糕、麻薯、太妃糖等黏食</li>
+          <li>火锅、麻辣烫、过烫的汤和咖啡</li>
+          <li>炸鸡、薯条、烤串等硬脆食物</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>🦷 仅供日常饮食参考，不能替代医生或营养师建议 · 根管复诊请遵医嘱</footer>
+</div>
+<div id="toast" class="toast"></div>
+
+<script>
+const STAGE_INFO = {
+  1:{label:'术后0-24小时', text:'麻醉可能还没完全退，建议 2-4 小时内先不吃东西。只选温凉流质或泥状食物，避免烫、避免咀嚼，防止咬到舌头或脸颊。'},
+  2:{label:'术后2-7天', text:'临时充填期：吃软烂、温食，少量多餐；用非治疗侧咀嚼，避开硬、黏、辣、烫和酒精。'},
+  3:{label:'术后7天以上', text:'恢复期：可以逐步恢复正常饮食，但仍建议避开坚果、硬糖、口香糖和过烫食物，直到医生确认。'}
+};
+
+const FOODS = [
+  {name:'小米南瓜粥', icon:'🥣', meal:'breakfast', kcal:180, p:4, c:35, f:2, unit:'1碗(300g)', stage:[1,2,3], note:'温软易咽'},
+  {name:'山药瘦肉粥', icon:'🥣', meal:'breakfast', kcal:260, p:14, c:38, f:6, unit:'1碗(350g)', stage:[2,3], note:'肉煮烂再吃'},
+  {name:'鸡蛋羹', icon:'🥚', meal:'breakfast', kcal:110, p:8, c:2, f:8, unit:'1小碗(150g)', stage:[1,2,3], note:'温热滑嫩'},
+  {name:'牛奶燕麦粥(软)', icon:'🥣', meal:'breakfast', kcal:250, p:9, c:38, f:6, unit:'1碗(300g)', stage:[2,3], note:'燕麦煮软'},
+  {name:'紫薯泥+牛奶', icon:'🍠', meal:'breakfast', kcal:210, p:7, c:39, f:3, unit:'1份(220g)', stage:[1,2,3], note:'压成泥'},
+  {name:'无糖豆浆', icon:'🥛', meal:'breakfast', kcal:130, p:9, c:10, f:6, unit:'1杯(300ml)', stage:[1,2,3], note:'温热喝'},
+  {name:'香蕉泥拌无糖酸奶', icon:'🍌', meal:'breakfast', kcal:210, p:8, c:33, f:4, unit:'1杯(250g)', stage:[1,2,3], note:'酸奶放至室温'},
+  {name:'全麦吐司泡牛奶', icon:'🍞', meal:'breakfast', kcal:250, p:9, c:36, f:7, unit:'1片+200ml奶', stage:[2,3], note:'泡软再吃'},
+  {name:'蒸南瓜泥+鸡蛋羹', icon:'🎃', meal:'breakfast', kcal:200, p:10, c:24, f:7, unit:'1份', stage:[1,2,3], note:'两种都软'},
+  {name:'菠菜鸡蛋羹', icon:'🥬', meal:'breakfast', kcal:130, p:11, c:3, f:8, unit:'1小碗', stage:[1,2,3], note:'补蛋白'},
+  {name:'番茄牛肉粥(软烂)', icon:'🍅', meal:'breakfast', kcal:280, p:18, c:36, f:7, unit:'1碗(350g)', stage:[2,3], note:'牛肉切碎煮烂'},
+
+  {name:'番茄鸡蛋烩饭', icon:'🍅', meal:'lunch,dinner', kcal:430, p:16, c:62, f:12, unit:'1份(350g)', stage:[2,3], note:'米饭软烂'},
+  {name:'鸡丝香菇粥', icon:'🍄', meal:'lunch,dinner', kcal:300, p:22, c:35, f:8, unit:'1碗(400g)', stage:[2,3], note:'鸡丝撕细'},
+  {name:'清蒸龙利鱼+土豆泥', icon:'🐟', meal:'lunch,dinner', kcal:330, p:30, c:28, f:10, unit:'1份(300g)', stage:[2,3], note:'鱼刺少、肉嫩'},
+  {name:'番茄豆腐煲', icon:'🍲', meal:'lunch,dinner', kcal:260, p:18, c:15, f:13, unit:'1份(320g)', stage:[2,3], note:'豆腐软嫩'},
+  {name:'虾仁蒸蛋+南瓜泥', icon:'🍤', meal:'lunch,dinner', kcal:280, p:24, c:18, f:10, unit:'1份(300g)', stage:[2,3], note:'高蛋白'},
+  {name:'冬瓜肉末粥', icon:'🍈', meal:'lunch,dinner', kcal:280, p:16, c:38, f:8, unit:'1碗(400g)', stage:[2,3], note:'清爽'},
+  {name:'土豆泥鸡胸沙拉(常温)', icon:'🥔', meal:'lunch,dinner', kcal:310, p:30, c:28, f:8, unit:'1份(320g)', stage:[2,3], note:'鸡胸剁碎'},
+  {name:'菠菜鸡蛋烂面', icon:'🍜', meal:'lunch,dinner', kcal:380, p:18, c:55, f:10, unit:'1碗(400g)', stage:[2,3], note:'面条煮软'},
+  {name:'南瓜鸡肉烩饭', icon:'🎃', meal:'lunch,dinner', kcal:450, p:26, c:60, f:13, unit:'1份(380g)', stage:[3], note:'恢复期选'},
+  {name:'清蒸鳕鱼+紫薯泥', icon:'🐟', meal:'lunch,dinner', kcal:350, p:28, c:38, f:8, unit:'1份(320g)', stage:[2,3], note:'高蛋白'},
+  {name:'瘦肉末豆腐羹+软米饭', icon:'🍲', meal:'lunch,dinner', kcal:320, p:20, c:40, f:9, unit:'1份(350g)', stage:[2,3], note:'米饭软'},
+  {name:'山药排骨粥(去骨)', icon:'🍖', meal:'lunch,dinner', kcal:330, p:22, c:40, f:9, unit:'1碗(400g)', stage:[2,3], note:'肉去骨撕碎'},
+  {name:'牛肉胡萝卜碎粥', icon:'🥕', meal:'lunch,dinner', kcal:310, p:22, c:36, f:8, unit:'1碗(400g)', stage:[2,3], note:'牛肉切碎'},
+  {name:'金枪鱼土豆泥', icon:'🐟', meal:'lunch,dinner', kcal:280, p:22, c:28, f:8, unit:'1份(300g)', stage:[2,3], note:'即食金枪鱼拌'},
+  {name:'鸡肉南瓜浓汤', icon:'🍲', meal:'lunch,dinner', kcal:250, p:20, c:22, f:8, unit:'1碗(350ml)', stage:[1,2,3], note:'搅打成泥'},
+  {name:'蔬菜鱼蓉浓汤', icon:'🥣', meal:'lunch,dinner', kcal:230, p:18, c:20, f:8, unit:'1碗(350ml)', stage:[1,2,3], note:'流质'},
+  {name:'嫩豆腐蛋花羹', icon:'🥣', meal:'lunch,dinner', kcal:180, p:14, c:8, f:10, unit:'1碗(350ml)', stage:[1,2,3], note:'温热'},
+  {name:'西兰花鸡肉泥+土豆泥', icon:'🥦', meal:'lunch,dinner', kcal:260, p:24, c:28, f:6, unit:'1份(320g)', stage:[2,3], note:'补充纤维'},
+  {name:'三文鱼南瓜粥', icon:'🍣', meal:'lunch,dinner', kcal:320, p:24, c:32, f:10, unit:'1碗(400g)', stage:[2,3], note:'优质脂肪'},
+  {name:'蒸蛋虾仁羹+山药泥', icon:'🍤', meal:'lunch,dinner', kcal:270, p:24, c:16, f:12, unit:'1份(320g)', stage:[2,3], note:'软嫩'},
+  {name:'鸡肉藜麦软饭', icon:'🍚', meal:'lunch,dinner', kcal:360, p:26, c:48, f:8, unit:'1份(350g)', stage:[3], note:'恢复期选'},
+
+  {name:'无糖酸奶(室温)', icon:'🥛', meal:'snack', kcal:90, p:5, c:9, f:3, unit:'1杯(150g)', stage:[2,3], note:'从冰箱取出放至室温'},
+  {name:'香蕉', icon:'🍌', meal:'snack', kcal:90, p:1, c:23, f:0, unit:'1根(120g)', stage:[1,2,3], note:'用勺压成泥'},
+  {name:'牛油果泥', icon:'🥑', meal:'snack', kcal:160, p:2, c:8, f:15, unit:'半个(70g)', stage:[1,2,3], note:'优质脂肪'},
+  {name:'苹果泥(无糖)', icon:'🍎', meal:'snack', kcal:70, p:0, c:18, f:0, unit:'1份(120g)', stage:[1,2,3], note:'不啃硬果'},
+  {name:'嫩豆腐花(无糖)', icon:'🍮', meal:'snack', kcal:100, p:5, c:8, f:4, unit:'1碗(250g)', stage:[1,2,3], note:'温热'},
+  {name:'蓝莓香蕉泥', icon:'🫐', meal:'snack', kcal:80, p:1, c:20, f:0, unit:'1份(120g)', stage:[1,2,3], note:'搅成泥'},
+  {name:'低脂奶酪杯', icon:'🧀', meal:'snack', kcal:100, p:8, c:4, f:6, unit:'1杯(100g)', stage:[2,3], note:'软奶酪'},
+  {name:'乳清蛋白奶昔', icon:'🥤', meal:'snack', kcal:150, p:24, c:8, f:3, unit:'1杯(300ml)', stage:[2,3], note:'常温'},
+  {name:'水煮蛋(压碎)', icon:'🥚', meal:'snack', kcal:70, p:6, c:1, f:5, unit:'1个', stage:[2,3], note:'压碎拌软食'},
+  {name:'蒸红薯泥', icon:'🍠', meal:'snack', kcal:120, p:2, c:28, f:0, unit:'1份(150g)', stage:[1,2,3], note:'压成泥'},
+  {name:'核桃泥拌酸奶', icon:'🥜', meal:'snack', kcal:180, p:6, c:12, f:13, unit:'1份(150g)', stage:[2,3], note:'核桃打成泥'}
+];
+
+const SLOTS = [
+  {id:'breakfast', name:'早餐', icon:'🌅', pool:'breakfast', min:1, max:2},
+  {id:'snack1', name:'上午加餐', icon:'🍌', pool:'snack', min:1, max:1},
+  {id:'lunch', name:'午餐', icon:'🍱', pool:'lunch', min:1, max:2},
+  {id:'snack2', name:'下午加餐', icon:'🥛', pool:'snack', min:1, max:1},
+  {id:'dinner', name:'晚餐', icon:'🌙', pool:'dinner', min:1, max:2}
+];
+
+let state = {
+  target: 1500,
+  stage: 2,
+  plan: null,
+  week: null,
+  consumed: loadConsumed()
+};
+
+function $(id){ return document.getElementById(id); }
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+
+function loadConsumed(){
+  try{
+    const raw = JSON.parse(localStorage.getItem('dentalDietLog') || '{"date":"","items":[]}');
+    if(raw.date !== todayStr()) return [];
+    return Array.isArray(raw.items) ? raw.items : [];
+  }catch(e){ return []; }
+}
+function saveConsumed(){
+  localStorage.setItem('dentalDietLog', JSON.stringify({date:todayStr(), items:state.consumed}));
+}
+function saveProfile(p){
+  localStorage.setItem('dentalDietProfile', JSON.stringify(p));
+}
+
+function readInputs(){
+  return {
+    height: parseFloat($('height').value) || 160,
+    weight: parseFloat($('weight').value) || 55,
+    age: parseFloat($('age').value) || 21,
+    activity: parseFloat($('activity').value) || 1.55,
+    goal: $('goal').value || 'cut',
+    stage: parseInt($('stage').value,10) || 2
+  };
+}
+
+function calcTargets(){
+  const p = readInputs();
+  const bmr = Math.max(800, 10*p.weight + 6.25*p.height - 5*p.age - 161);
+  const tdee = bmr * p.activity;
+  let target = tdee;
+  if(p.goal === 'mild') target = tdee - 250;
+  if(p.goal === 'cut') target = tdee - 400;
+  if(p.goal === 'maintain') target = tdee;
+  if(p.goal === 'lean') target = tdee + 150;
+  target = Math.max(1100, Math.round(target));
+  const protein = Math.round(target * 0.28 / 4);
+  const carbs = Math.round(target * 0.42 / 4);
+  const fat = Math.round(target * 0.30 / 9);
+  $('bmrText').textContent = Math.round(bmr);
+  $('targetText').textContent = target;
+  $('proteinTarget').textContent = protein + 'g';
+  $('carbsTarget').textContent = carbs + 'g';
+  $('fatTarget').textContent = fat + 'g';
+  $('targetKcal').textContent = target;
+  state.target = target;
+  state.stage = p.stage;
+  return {bmr, target, protein, carbs, fat};
+}
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function mealMatches(food, pool){
+  return food.meal.split(',').includes(pool);
+}
+
+function poolFor(slot, stage, usedNames){
+  return FOODS.filter(f => f.stage.includes(stage) && mealMatches(f, slot.pool) && !usedNames.has(f.name));
+}
+
+function generateDay(target, stage){
+  let best = {score: Infinity, meals: []};
+  for(let attempt=0; attempt<260; attempt++){
+    const used = new Set();
+    const meals = [];
+    let total=0, p=0, c=0, f=0;
+    for(const slot of SLOTS){
+      const pool = poolFor(slot, stage, used);
+      if(!pool.length) continue;
+      const count = Math.min(slot.max, slot.min + Math.floor(Math.random()*(slot.max - slot.min + 1)));
+      const picks = shuffle(pool).slice(0, Math.min(count, pool.length));
+      picks.forEach(x => { used.add(x.name); total += x.kcal; p += x.p; c += x.c; f += x.f; });
+      meals.push({slot, items:picks});
+    }
+    const proteinPenalty = Math.max(0, target*0.28 - p) * 1.1;
+    const score = Math.abs(total - target) + proteinPenalty;
+    if(score < best.score){
+      best = {score, meals, total, p, c, f};
+    }
+  }
+  return best;
+}
+
+function rerollSlot(slotId){
+  if(!state.plan) return;
+  const idx = state.plan.meals.findIndex(m => m.slot.id === slotId);
+  if(idx < 0) return;
+  const slot = SLOTS.find(s => s.id === slotId);
+  const used = new Set();
+  state.plan.meals.forEach((m,i) => {
+    if(i !== idx) m.items.forEach(x => used.add(x.name));
+  });
+  const pool = poolFor(slot, state.stage, used);
+  if(!pool.length){ toast('这个阶段可选的食物不多啦'); return; }
+  const oldCount = state.plan.meals[idx].items.length;
+  const count = Math.min(pool.length, oldCount || slot.min);
+  const picks = shuffle(pool).slice(0, count);
+  state.plan.meals[idx].items = picks;
+  recalcPlanTotals();
+  renderToday();
+}
+
+function recalcPlanTotals(){
+  let total=0,p=0,c=0,f=0;
+  state.plan.meals.forEach(m => m.items.forEach(x => { total+=x.kcal; p+=x.p; c+=x.c; f+=x.f; }));
+  state.plan.total = total; state.plan.p = p; state.plan.c = c; state.plan.f = f;
+}
+
+function newPlan(){
+  calcTargets();
+  state.plan = generateDay(state.target, state.stage);
+  renderToday();
+}
+
+function renderStageBanner(){
+  const info = STAGE_INFO[state.stage] || STAGE_INFO[2];
+  $('stageBanner').innerHTML = '<b>' + info.label + '</b> · ' + info.text;
+}
+
+function renderSummary(){
+  const planKcal = state.plan ? state.plan.total : 0;
+  const planP = state.plan ? state.plan.p : 0;
+  const planC = state.plan ? state.plan.c : 0;
+  const planF = state.plan ? state.plan.f : 0;
+  const consumed = state.consumed.reduce((a,x)=>a+x.kcal,0);
+  const consumedP = state.consumed.reduce((a,x)=>a+x.p,0);
+  const consumedC = state.consumed.reduce((a,x)=>a+x.c,0);
+  const consumedF = state.consumed.reduce((a,x)=>a+x.f,0);
+  const targets = calcTargets();
+  $('targetKcal').textContent = targets.target;
+  $('planKcal').textContent = planKcal;
+  $('consumedKcal').textContent = consumed;
+  $('remainingKcal').textContent = Math.max(0, targets.target - consumed);
+  $('proteinVal').textContent = consumedP + ' / ' + targets.protein + 'g';
+  $('carbsVal').textContent = consumedC + ' / ' + targets.carbs + 'g';
+  $('fatVal').textContent = consumedF + ' / ' + targets.fat + 'g';
+  $('proteinBar').style.width = Math.min(100, consumedP/targets.protein*100) + '%';
+  $('carbsBar').style.width = Math.min(100, consumedC/targets.carbs*100) + '%';
+  $('fatBar').style.width = Math.min(100, consumedF/targets.fat*100) + '%';
+}
+
+function renderPlan(){
+  const list = $('planList');
+  if(!state.plan || !state.plan.meals.length){
+    list.innerHTML = '<div class="empty">还没有推荐，先点上面的“一键生成全天食谱”吧。</div>';
+    return;
+  }
+  let html = '';
+  state.plan.meals.forEach((meal, mi) => {
+    let mealKcal = 0;
+    meal.items.forEach(x => mealKcal += x.kcal);
+    html += '<div class="meal-card">';
+    html += '<div class="meal-head"><h3>' + meal.slot.icon + ' ' + meal.slot.name + '</h3><button data-action="reroll" data-slot="' + meal.slot.id + '">换一餐</button></div>';
+    meal.items.forEach(item => {
+      html += '<div class="food-row">';
+      html += '<div><div class="food-name">' + item.icon + ' ' + item.name + '</div><div class="food-meta">' + item.unit + ' · ' + item.note + '</div></div>';
+      html += '<div class="food-right"><span class="food-kcal">' + item.kcal + '<small> kcal</small></span><button class="mini" data-action="add" data-slot="' + meal.slot.id + '" data-name="' + item.name + '" title="加入已记录">+</button></div>';
+      html += '</div>';
+    });
+    html += '<div class="meal-total">本餐小计 ' + mealKcal + ' kcal</div>';
+    html += '</div>';
+  });
+  list.innerHTML = html;
+}
+
+function renderConsumed(){
+  const box = $('consumedList');
+  if(!state.consumed.length){
+    box.innerHTML = '<div class="empty">今天还没有记录，点餐卡右侧的“+”把吃下的记进来吧。</div>';
+    return;
+  }
+  box.innerHTML = state.consumed.map((x,i) =>
+    '<span class="chip">' + x.name + ' <b>' + x.kcal + ' kcal</b><button data-action="remove" data-index="' + i + '">×</button></span>'
+  ).join('');
+}
+
+function renderToday(){
+  renderStageBanner();
+  renderSummary();
+  renderPlan();
+  renderConsumed();
+}
+
+function renderWeek(){
+  if(!state.week) generateWeek();
+  const days = ['周日','周一','周二','周三','周四','周五','周六'];
+  const start = new Date();
+  let html = '';
+  state.week.forEach((day, i) => {
+    const d = new Date(start); d.setDate(start.getDate()+i);
+    const label = (i===0 ? '今天' : days[d.getDay()]) + ' ' + (d.getMonth()+1) + '/' + d.getDate();
+    html += '<div class="day-card"><h3>' + label + '</h3>';
+    day.meals.forEach(m => {
+      m.items.forEach(x => {
+        html += '<div class="row"><span>' + x.icon + ' ' + x.name + '</span><span>' + x.kcal + ' kcal</span></div>';
+      });
+    });
+    html += '<div class="day-total">全天 ' + day.total + ' kcal · 蛋白 ' + day.p + 'g</div></div>';
+  });
+  $('weekList').innerHTML = html;
+}
+
+function generateWeek(){
+  calcTargets();
+  state.week = [];
+  for(let i=0;i<7;i++) state.week.push(generateDay(state.target, state.stage));
+  renderWeek();
+}
+
+function renderFoods(){
+  const q = $('foodSearch').value.trim().toLowerCase();
+  const list = FOODS.filter(f => {
+    const okStage = f.stage.includes(state.stage);
+    const okQ = !q || f.name.toLowerCase().includes(q) || f.note.toLowerCase().includes(q) || f.meal.toLowerCase().includes(q);
+    return okStage && okQ;
+  });
+  const box = $('foodList');
+  if(!list.length){
+    box.innerHTML = '<div class="empty">没有匹配的食物，换个关键词试试。</div>';
+    return;
+  }
+  box.innerHTML = list.map(f => {
+    const mealName = f.meal === 'breakfast' ? '早餐' : f.meal === 'snack' ? '加餐' : '午/晚餐';
+    return '<div class="food-card"><div class="top"><h4>' + f.icon + ' ' + f.name + '</h4><span class="kcal">' + f.kcal + ' kcal</span></div>' +
+      '<p>蛋白 ' + f.p + 'g · 碳水 ' + f.c + 'g · 脂肪 ' + f.f + 'g</p>' +
+      '<div class="tags"><span class="tag">' + mealName + '</span><span class="tag">' + f.unit + '</span><span class="tag ok">' + f.note + '</span></div></div>';
+  }).join('');
+}
+
+function toast(msg){
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(()=>t.classList.remove('show'), 1800);
+}
+
+function copyPlan(){
+  if(!state.plan) { toast('先一键生成今日食谱'); return; }
+  let text = '🦷 牙牙饮食计划 · ' + todayStr() + '\n';
+  text += '目标摄入 ' + state.target + ' kcal\n';
+  text += STAGE_INFO[state.stage].label + '\n----------------\n';
+  state.plan.meals.forEach(m => {
+    text += m.slot.name + '：';
+    text += m.items.map(x => x.icon + x.name + '(' + x.kcal + 'kcal)').join('、');
+    text += '\n';
+  });
+  text += '----------------\n全天合计 ' + state.plan.total + ' kcal · 蛋白 ' + state.plan.p + 'g · 碳水 ' + state.plan.c + 'g · 脂肪 ' + state.plan.f + 'g\n';
+  text += '根管期提醒：温软食物、少量多餐、非治疗侧咀嚼、避开硬黏辣烫。';
+  function fallback(){
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+    toast('已复制到剪贴板');
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>toast('已复制今日清单')).catch(fallback);
+  } else fallback();
+}
+
+function addLog(item){
+  state.consumed.push({name:item.name, kcal:item.kcal, p:item.p, c:item.c, f:item.f, at:Date.now()});
+  saveConsumed();
+  renderToday();
+  toast('已记录：' + item.name);
+}
+
+function removeLog(i){
+  state.consumed.splice(i,1);
+  saveConsumed();
+  renderToday();
+}
+
+function switchView(view){
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.view === view));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + view));
+}
+
+document.addEventListener('click', e => {
+  const btn = e.target.closest('[data-action]');
+  if(!btn) return;
+  const action = btn.dataset.action;
+  if(action === 'add'){
+    const slotId = btn.dataset.slot;
+    const name = btn.dataset.name;
+    const meal = state.plan && state.plan.meals.find(m => m.slot.id === slotId);
+    const item = meal && meal.items.find(x => x.name === name);
+    if(item) addLog(item);
+  }
+  if(action === 'reroll') rerollSlot(btn.dataset.slot);
+  if(action === 'remove') removeLog(parseInt(btn.dataset.index,10));
+});
+
+$('saveBtn').addEventListener('click', () => {
+  const p = readInputs();
+  saveProfile(p);
+  newPlan();
+  toast('已保存，今日推荐已更新');
+});
+$('genBtn').addEventListener('click', () => {
+  newPlan();
+  toast('已重新生成全天食谱');
+});
+$('clearLogBtn').addEventListener('click', () => {
+  state.consumed = [];
+  saveConsumed();
+  renderToday();
+  toast('已清空今日记录');
+});
+$('copyBtn').addEventListener('click', copyPlan);
+$('weekBtn').addEventListener('click', generateWeek);
+$('foodSearch').addEventListener('input', renderFoods);
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => switchView(t.dataset.view)));
+
+(function init(){
+  try{
+    const saved = JSON.parse(localStorage.getItem('dentalDietProfile') || 'null');
+    if(saved){
+      $('height').value = saved.height;
+      $('weight').value = saved.weight;
+      $('age').value = saved.age;
+      $('activity').value = saved.activity;
+      $('goal').value = saved.goal;
+      $('stage').value = saved.stage;
+    }
+  }catch(e){}
+  calcTargets();
+  state.plan = generateDay(state.target, state.stage);
+  renderToday();
+  renderFoods();
+})();
+</script>
+</body>
+</html>
